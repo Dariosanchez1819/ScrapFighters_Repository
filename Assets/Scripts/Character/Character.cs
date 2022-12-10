@@ -144,6 +144,9 @@ public class Character : MonoBehaviour
 	public TextMeshProUGUI		text_life;
 	public TextMeshProUGUI		text_shield;
 	public TextMeshProUGUI		text_ulti;
+	private GameObject			ui_life_1;
+	private GameObject			ui_life_2;
+	private GameObject			ui_life_3;
 
 
 
@@ -165,6 +168,11 @@ public class Character : MonoBehaviour
 		rb = GetComponent<Rigidbody2D>();
 		tr = GetComponent<Transform>();
 		an = GetComponent<Animator>();
+
+		ui_life_1 = GameObject.Find("a_life_1");
+		ui_life_2 = GameObject.Find("a_life_2");
+		ui_life_3 = GameObject.Find("a_life_3");
+
 
 		ultimate_now = 0;
 		
@@ -343,6 +351,36 @@ public class Character : MonoBehaviour
 		text_life.text = lives.ToString();
 		text_shield.text = shields.ToString();
 
+
+
+		if (lives == 2)
+		{
+			ui_life_3.SetActive(false);
+		//	StartCoroutine(life_move());
+		}
+		if (lives == 1)
+			ui_life_2.SetActive(false);
+		if (lives == 0)
+			ui_life_1.SetActive(false);
+	}
+
+
+	private IEnumerator life_move()
+	{
+		ui_life_3.GetComponent<Transform>().position = new Vector3(ui_life_3.GetComponent<Transform>().position.x, ui_life_3.GetComponent<Transform>().position.y, 1);
+		ui_life_3.GetComponent<Rigidbody2D>().velocity = new Vector2(-10, 0);
+
+		yield return new WaitForSeconds(0.2f);
+
+		if (lives == 2)
+		{
+			ui_life_3.SetActive(false);
+			print("Hey");
+		}
+		if (lives == 1)
+			ui_life_2.SetActive(false);
+		if (lives == 0)
+			ui_life_1.SetActive(false);
 	}
 
 	void one_shield_less()
