@@ -64,6 +64,8 @@ public class Character : MonoBehaviour
 
 
 
+
+
 	/*
 	**      Jump Variables
 	*/
@@ -75,7 +77,7 @@ public class Character : MonoBehaviour
 	public Transform		feet_pos;
 	public bool				is_grounded;
 	public LayerMask		ground_mask;
-	private float			check_radius;
+	public float			check_radius = 0.15f;
 
 	public float			jump_force;
 	private float			og_jump_force;
@@ -84,6 +86,8 @@ public class Character : MonoBehaviour
 	private int				n_jumps;
 	private float			max_jump_timer;
 	public float			max_jump_cooldown = 1.5f;
+
+
 
 
 
@@ -122,8 +126,8 @@ public class Character : MonoBehaviour
 	private bool			knockback_bool = false;
 
 	public	float			knockback_time;
-	public	float			ultimate_now;
-	public	float			ultimate_max;
+	public	int				ultimate_max;
+	private	int				ultimate_now;
 	
 	private	bool			ultimate_hitted;
 
@@ -140,15 +144,12 @@ public class Character : MonoBehaviour
 	[Header("UI:")]
 
 
-	public Character			opponent;
+	private Character			opponent;
 	public TextMeshProUGUI		text_life;
-	public TextMeshProUGUI		text_shield;
-	public TextMeshProUGUI		text_ulti;
-	private GameObject			ui_life_1;
-	private GameObject			ui_life_2;
-	private GameObject			ui_life_3;
 
-
+	private GameObject[]		ui_lives = new GameObject[3];
+	private GameObject[]		ui_shields = new GameObject[20];
+	private GameObject[]		ui_ultimate = new GameObject[10];
 
 
 
@@ -169,10 +170,10 @@ public class Character : MonoBehaviour
 		tr = GetComponent<Transform>();
 		an = GetComponent<Animator>();
 
-		ui_life_1 = GameObject.Find("a_life_1");
-		ui_life_2 = GameObject.Find("a_life_2");
-		ui_life_3 = GameObject.Find("a_life_3");
-
+		if (player == 'a')
+			opponent = GameObject.Find("Character_b").GetComponent<Character>();
+		if (player == 'b')
+			opponent = GameObject.Find("Character_a").GetComponent<Character>();
 
 		ultimate_now = 0;
 		
@@ -182,9 +183,12 @@ public class Character : MonoBehaviour
 		shields_max = shields;
 		og_jump_force = jump_force;
 
+		if (player == 'b')
+			tr.eulerAngles = new Vector3(0, 180, 0);
+
+		ui_assigment();
+
 		text_life.text = lives.ToString();
-		text_shield.text = shields.ToString();
-		text_ulti.text = ultimate_now.ToString();
 	}
 
 	void Update()
@@ -197,7 +201,6 @@ public class Character : MonoBehaviour
 	{
 		ft_attack();
 		h_mov();
-		text_ulti.text = ultimate_now.ToString();
 	}
 
 
@@ -324,70 +327,35 @@ public class Character : MonoBehaviour
 
 
 	/*
-	**		Getting hit
+	**				Attacked
 	*/
-
-	public bool		is_attacking_combo;
 
 	private void OnTriggerEnter2D(Collider2D other)
 	{
-		if (	((this.tag == "A" && other.tag == "B") || (this.tag == "B" && other.tag == "A")))
+		if (((this.tag == "A" && other.tag == "B") || (this.tag == "B" && other.tag == "A")))
 		{
 			ultimate_now++;
 			if (ultimate_now == ultimate_max)
 			{
 				ultimate_now = 0;
+				ulti_reset();
 				opponent.ultimate_hitted = true;
+			}
+			else
+			{
+				ulti_plus_ui();
 			}
 			opponent.one_shield_less();	
 			opponent.pushback();
 		}
 	}
 
-	void one_life_less()
-	{
-		lives--;
-		shields = shields_max;
-		text_life.text = lives.ToString();
-		text_shield.text = shields.ToString();
-
-
-
-		if (lives == 2)
-		{
-			ui_life_3.SetActive(false);
-		//	StartCoroutine(life_move());
-		}
-		if (lives == 1)
-			ui_life_2.SetActive(false);
-		if (lives == 0)
-			ui_life_1.SetActive(false);
-	}
-
-
-	private IEnumerator life_move()
-	{
-		ui_life_3.GetComponent<Transform>().position = new Vector3(ui_life_3.GetComponent<Transform>().position.x, ui_life_3.GetComponent<Transform>().position.y, 1);
-		ui_life_3.GetComponent<Rigidbody2D>().velocity = new Vector2(-10, 0);
-
-		yield return new WaitForSeconds(0.2f);
-
-		if (lives == 2)
-		{
-			ui_life_3.SetActive(false);
-			print("Hey");
-		}
-		if (lives == 1)
-			ui_life_2.SetActive(false);
-		if (lives == 0)
-			ui_life_1.SetActive(false);
-	}
-
 	void one_shield_less()
 	{
 		if (shields != 1)
 			shields--;
-		text_shield.text = shields.ToString();
+
+		ui_shields_minus();
 	}
 
 
@@ -482,8 +450,6 @@ public class Character : MonoBehaviour
 
 	float force_depending_shield()
 	{
-		print("(" + ( shields - 1 )+ ")");
-		print("arr_knockback _ : " + arr_knockback[shields - 1]  + " | Total strenght: " +   (Knockback_strenght * arr_knockback[shields - 1]));
 		return Knockback_strenght * arr_knockback[shields - 1];
 	}
 
@@ -514,5 +480,86 @@ public class Character : MonoBehaviour
 			tr.position = new Vector3(-7.069f, 1, 0);
 		else 
 			tr.position = new Vector3(4.732f, 1, 0);
+	}
+
+	void one_life_less()
+	{
+		lives--;
+		shields = shields_max;
+		ultimate_now = 0;
+
+		text_life.text = lives.ToString();			// BORRAR, UI
+	
+		ui_refresh_death();
+	}
+
+
+
+
+
+
+	/*
+	**		   __  ______   ___              _                            __ 
+	**		  / / / /  _/  /   |  __________(_)___ _____ ___  ___  ____  / /_
+	**		 / / / // /   / /| | / ___/ ___/ / __ `/ __ `__ \/ _ \/ __ \/ __/
+	**		/ /_/ // /   / ___ |(__  |__  ) / /_/ / / / / / /  __/ / / / /_  
+	**		\____/___/  /_/  |_/____/____/_/\__, /_/ /_/ /_/\___/_/ /_/\__/  
+	**		                               /____/                            
+	*/
+
+	void	ui_assigment()
+	{
+		int	i;
+
+		i = 0;
+		while (i < 20)
+		{
+			ui_shields[i] = GameObject.Find(player + "_shield_" + (i + 1));
+			++i;
+		}
+		i = 0;
+		while (i < 10)
+		{
+			ui_ultimate[i] = GameObject.Find(player + "_ultimate_" + (i + 1));
+			ui_ultimate[i].SetActive(false);
+			++i;
+		}
+	}
+
+	void 	ui_shields_minus()
+	{
+		ui_shields[(shields * 2) + 1].SetActive(false);
+		ui_shields[(shields * 2)].SetActive(false);
+	}
+
+	void	ui_refresh_death()
+	{
+		int i;
+
+		i = 0;
+		ulti_reset();
+		while (i < 20)
+		{
+			ui_shields[i].SetActive(true);
+			++i;
+		}
+	}
+
+	void	ulti_plus_ui()
+	{
+		ui_ultimate[(ultimate_now * 2) - 1].SetActive(true);
+		ui_ultimate[(ultimate_now * 2) - 2].SetActive(true);
+	}
+
+	void ulti_reset()
+	{
+		int i;
+
+		i = 0;
+		while (i < 10)
+		{
+			ui_ultimate[i].SetActive(false);
+			++i;
+		}
 	}
 }
