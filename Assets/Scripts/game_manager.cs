@@ -5,20 +5,53 @@ using UnityEngine.SceneManagement;
 
 public class game_manager : MonoBehaviour
 {
-	private Character			a;
-	private Character			b;
+	private Character				a;
+	private Character				b;
 	public string					scene_name;
 
 	public float					time_first_fall;
 	public float					time_second_fall;
 
-	public GameObject			Fase01;
-	public GameObject			Fase02;
+	public GameObject				Fase01;
+	public GameObject				Fase02;
 
+	public GameObject				Character_A_p1;
+	public GameObject				Character_B_p1;
+	public GameObject				Character_C_p1;
+
+	public GameObject				Character_A_p2;
+	public GameObject				Character_B_p2;
+	public GameObject				Character_C_p2;
+	
 	void Start()
 	{
-			a = GameObject.Find("Character_a").GetComponent<Character>();
-			b = GameObject.Find("Character_b").GetComponent<Character>();
+		time_first_fall += Time.time;
+		time_second_fall += Time.time;
+
+		Character_A_p1.SetActive(false);
+		Character_B_p1.SetActive(false);
+		Character_C_p1.SetActive(false);
+
+		Character_A_p2.SetActive(false);
+		Character_B_p2.SetActive(false);
+		Character_C_p2.SetActive(false);
+
+		if (menu_select_character.position_p1 == 'A')
+			Character_A_p1.SetActive(true);
+		if (menu_select_character.position_p1 == 'B')
+			Character_B_p1.SetActive(true);
+		if (menu_select_character.position_p1 == 'C')
+			Character_C_p1.SetActive(true);
+
+		if (menu_select_character.position_p2 == 'A')
+			Character_A_p2.SetActive(true);
+		if (menu_select_character.position_p2 == 'B')
+			Character_B_p2.SetActive(true);
+		if (menu_select_character.position_p2 == 'C')
+			Character_C_p2.SetActive(true);			
+
+		a = GameObject.Find("Character_a").GetComponent<Character>();
+		b = GameObject.Find("Character_b").GetComponent<Character>();
 	}
 
 	// Update is called once per frame
@@ -35,8 +68,10 @@ public class game_manager : MonoBehaviour
 	void plataforms_change()
 	{
 		if (Time.time > time_first_fall)
-			Fase02.SetActive(false);
+		{
+			Fase02.GetComponent<Rigidbody2D>().velocity = new Vector3(0,-1,0);
+		}
 		if (Time.time > time_second_fall) 
-			Fase01.SetActive(false);
+			Fase01.GetComponent<Rigidbody2D>().velocity = new Vector3(0,-1,0);
 	}
 }

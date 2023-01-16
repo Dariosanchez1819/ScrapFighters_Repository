@@ -7,6 +7,8 @@ public class menu_load_scene : MonoBehaviour
 {
 
     public string name_next_scene;
+    public string name_controls_scene;
+
 
     // Start is called before the first frame update
     void Start()
@@ -25,4 +27,16 @@ public class menu_load_scene : MonoBehaviour
     {
       SceneManager.LoadScene(name_next_scene);
     }
+
+    public void ft_exitv()
+    {
+      Application.Quit();
+    }
+
+    public void ft_controls()
+    {
+      SceneManager.LoadScene(name_controls_scene);
+
+    }    
+
 }

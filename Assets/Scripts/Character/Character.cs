@@ -144,12 +144,12 @@ public class Character : MonoBehaviour
 	[Header("UI:")]
 
 
-	private Character			opponent;
+	public Character			opponent;
 	public TextMeshProUGUI		text_life;
 
 	private GameObject[]		ui_lives = new GameObject[3];
-	private GameObject[]		ui_shields = new GameObject[20];
-	private GameObject[]		ui_ultimate = new GameObject[10];
+	public GameObject[]		ui_shields = new GameObject[20];
+	public GameObject[]		ui_ultimate = new GameObject[10];
 
 
 
@@ -520,6 +520,7 @@ public class Character : MonoBehaviour
 		i = 0;
 		while (i < 10)
 		{
+			print(player + "_ultimate_" + (i + 1));
 			ui_ultimate[i] = GameObject.Find(player + "_ultimate_" + (i + 1));
 			ui_ultimate[i].SetActive(false);
 			++i;
