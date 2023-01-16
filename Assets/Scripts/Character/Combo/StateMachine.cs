@@ -10,14 +10,15 @@ public class StateMachine : MonoBehaviour
 {
 	public string customName;
 
-	private State mainStateType;
+	public State mainStateType;
 
-	public State CurrentState { get; private set; }
-	private State nextState;
+	public State CurrentState;
+	public State nextState;
 	public char		type;
 	void Start()
 	{
 		OnValidate();
+		
 	}
 
 	// Update is called once per frame

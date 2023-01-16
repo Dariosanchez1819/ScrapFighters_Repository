@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /*
 **		Character Combo
@@ -30,6 +31,8 @@ public class CharacterCombo : MonoBehaviour
 		if (player_key == 'b')
 			character =  GameObject.Find("Character_b");
 		meleeStateMachine = GetComponent<StateMachine>();
+
+		meleeStateMachine.CurrentState = new IdleCombatState();
 	}
 
 	// Update is called once per frame
@@ -37,6 +40,7 @@ public class CharacterCombo : MonoBehaviour
 	{
 		if (pressing_attack() && meleeStateMachine.CurrentState.GetType() == typeof(IdleCombatState))
 		{
+			print("Penis");
 			meleeStateMachine.SetNextState(new GroundEntryState());
 		}
 
