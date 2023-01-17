@@ -40,7 +40,7 @@ public class CharacterCombo : MonoBehaviour
 	{
 		if (pressing_attack() && meleeStateMachine.CurrentState.GetType() == typeof(IdleCombatState))
 		{
-			print("Penis");
+			print("start");
 			meleeStateMachine.SetNextState(new GroundEntryState());
 		}
 

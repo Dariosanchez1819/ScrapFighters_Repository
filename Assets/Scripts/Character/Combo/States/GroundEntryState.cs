@@ -23,7 +23,7 @@ public class GroundEntryState : MeleeBaseState
             if (shouldCombo)
             {
             //    Debug.Log("2");
-                stateMachine.SetNextState(new GroundComboState());
+                stateMachine.SetNextState(new IdleCombatState());
             }
             else
             {

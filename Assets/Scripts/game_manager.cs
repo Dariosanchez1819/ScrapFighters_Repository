@@ -15,6 +15,9 @@ public class game_manager : MonoBehaviour
 	public GameObject				Fase01;
 	public GameObject				Fase02;
 
+
+	//Handle Characters
+
 	public GameObject				Character_A_p1;
 	public GameObject				Character_B_p1;
 	public GameObject				Character_C_p1;
@@ -22,33 +25,56 @@ public class game_manager : MonoBehaviour
 	public GameObject				Character_A_p2;
 	public GameObject				Character_B_p2;
 	public GameObject				Character_C_p2;
+
+	//Handle Portraits
+
+	public GameObject				Portrait_A_p1;
+	public GameObject				Portrait_B_p1;
+	public GameObject				Portrait_C_p1;
+
+	public GameObject				Portrait_A_p2;
+	public GameObject				Portrait_B_p2;
+	public GameObject				Portrait_C_p2;
+
 	
 	void Start()
 	{
 		time_first_fall += Time.time;
 		time_second_fall += Time.time;
 
-		Character_A_p1.SetActive(false);
-		Character_B_p1.SetActive(false);
-		Character_C_p1.SetActive(false);
-
-		Character_A_p2.SetActive(false);
-		Character_B_p2.SetActive(false);
-		Character_C_p2.SetActive(false);
-
 		if (menu_select_character.position_p1 == 'A')
+		{
+			Portrait_A_p1.SetActive(true);
 			Character_A_p1.SetActive(true);
-		if (menu_select_character.position_p1 == 'B')
+		}
+		else if (menu_select_character.position_p1 == 'B')
+		{
+			Portrait_B_p1.SetActive(true);
 			Character_B_p1.SetActive(true);
-		if (menu_select_character.position_p1 == 'C')
+		}
+		else if (menu_select_character.position_p1 == 'C')
+		{
+			Portrait_C_p1.SetActive(true);
 			Character_C_p1.SetActive(true);
+		}
+
+
 
 		if (menu_select_character.position_p2 == 'A')
+		{
+			Portrait_A_p2.SetActive(true);
 			Character_A_p2.SetActive(true);
-		if (menu_select_character.position_p2 == 'B')
+		}
+		else if (menu_select_character.position_p2 == 'B')
+		{
+			Portrait_B_p2.SetActive(true);
 			Character_B_p2.SetActive(true);
-		if (menu_select_character.position_p2 == 'C')
+		}
+		else if (menu_select_character.position_p2 == 'C')
+		{
+			Portrait_C_p2.SetActive(true);
 			Character_C_p2.SetActive(true);			
+		}
 
 		a = GameObject.Find("Character_a").GetComponent<Character>();
 		b = GameObject.Find("Character_b").GetComponent<Character>();

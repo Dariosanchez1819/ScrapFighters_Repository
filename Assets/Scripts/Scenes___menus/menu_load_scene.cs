@@ -39,4 +39,10 @@ public class menu_load_scene : MonoBehaviour
 
     }    
 
+
+    public void ft_resume()
+    {
+      SceneManager.LoadScene(name_controls_scene);
+
+    } 
 }
